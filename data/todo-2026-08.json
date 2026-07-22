@@ -1,0 +1,64 @@
+{
+  "title": "To do (8月)",
+  "source": "data/todo.json の未完了項目を引き継ぎ（2026-07-22 時点、完了済み項目は除外）",
+  "sections": [
+    {
+      "name": "7月から持ち越し",
+      "status": "carried_over",
+      "groups": [
+        {
+          "name": "研究関連",
+          "items": [
+            { "text": "科研費申請：事前アドバイス 7月中旬から29日まで締め切り。ChatGPTのコメントを参考に修正を加える" },
+            { "text": "データベース担当分の入力", "due": "2026-07-31" },
+            { "text": "上川先生 EAUOS abstract", "due": "2026-07-25" },
+            { "text": "JUA 発表テーマの検討（次回meeting）", "due": "2026-08-05" },
+            { "text": "希少癌DB", "due": "2026-08-20" }
+          ]
+        },
+        {
+          "name": "臨床関連",
+          "items": [
+            { "text": "ICUD 復習" },
+            { "text": "RANUx 戦略" },
+            { "text": "同意書：尿道形成（吻合型、代用組織、亀頭部、尿道会陰ろう）草案は作成済、内容チェック未" },
+            { "text": "伊藤先生 研究テーマのreview" },
+            { "text": "IJU：TURBT後狭窄のwebアンケート under review" },
+            { "text": "RCC論文：Clinical Genitourinary Cancerへ。Reviewerのコメントで追加解析" },
+            { "text": "USD with NMIBCのケースシリーズ：Urology Practiceに投稿準備を" },
+            {
+              "text": "JUOG新規腎癌研究「免疫チェックポイント阻害薬時代における高リスク腎細胞癌に対する周術期治療に関する後ろ向き観察研究」",
+              "subitems": [
+                { "text": "倫理審査" },
+                { "text": "データベース入力", "due": "2026-09-30" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "学会・研究会",
+          "items": [
+            { "text": "排尿機能学会（山梨）", "date": "2026-08-28/29", "note": "学会賞で出したが一般演題へ、8/29発表" },
+            { "text": "尿道関連の講演会（MSD）", "date": "2026-09-16", "note": "発表" },
+            { "text": "泌尿器腫瘍学会（神戸）", "date": "2026-10-24/25", "note": "TURBT後狭窄のwebアンケートで演題登録" },
+            { "text": "GURS（メキシコシティー）", "date": "2026-11-05/07", "note": "NDB / USD with NMIBC" },
+            { "text": "腎癌関連の講演会（エーザイ）", "note": "座長" }
+          ]
+        },
+        {
+          "name": "論文",
+          "items": [
+            { "text": "医原性狭窄のreview" },
+            { "text": "腎癌：異時性vs同時性 腎摘有無" }
+          ]
+        },
+        {
+          "name": "将来の予定",
+          "items": [
+            { "text": "2027 JUA総会「医原性尿道狭窄のupdate」30分 — カテーテル関連、TUR（TURP＋TURBT）、VUAS" }
+          ]
+        }
+      ]
+    }
+  ]
+}

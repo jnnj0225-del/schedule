@@ -1,13 +1,18 @@
-import calendarSeed from '../data/2026-07.json'
-import todoSeed from '../data/todo.json'
+import julySeed from '../data/2026-07.json'
+import augustSeed from '../data/2026-08.json'
+import todoSeed from '../data/todo-2026-08.json'
 import type { DayNotes, TodoItem, TodoSection } from './types'
 import { newId } from './storage'
 
+const calendarSeeds = [julySeed, augustSeed]
+
 export function buildInitialDayNotes(): DayNotes {
   const notes: DayNotes = {}
-  for (const day of calendarSeed.days) {
-    if (day.notes.length > 0) {
-      notes[day.date] = day.notes
+  for (const month of calendarSeeds) {
+    for (const day of month.days) {
+      if (day.notes.length > 0) {
+        notes[day.date] = day.notes
+      }
     }
   }
   return notes
