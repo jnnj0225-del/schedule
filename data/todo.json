@@ -1,0 +1,84 @@
+{
+  "title": "To do",
+  "source": "data/todo-source.txt",
+  "sections": [
+    {
+      "name": "いったん出来ているもの",
+      "status": "done_or_in_progress",
+      "groups": [
+        {
+          "name": "研究関連",
+          "items": [
+            { "text": "科研費申請：事前アドバイス 7月中旬から29日まで締め切り。ChatGPTのコメントを参考に修正を加える" },
+            { "text": "WJUのrevise 7/10まで → submitした", "done": true },
+            { "text": "腎癌データベース改訂：6/26に配布済", "done": true }
+          ]
+        },
+        {
+          "name": "臨床関連",
+          "items": [
+            { "text": "ICUD 復習" },
+            { "text": "RANUx 戦略" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "まだできていないもの",
+      "status": "not_started",
+      "groups": [
+        {
+          "name": "研究関連",
+          "items": [
+            { "text": "データベース担当分の入力", "due": "2026-07-31" },
+            { "text": "上川先生 EAUOS abstract", "due": "2026-07-25" },
+            { "text": "JUA 発表テーマの検討（次回meeting）", "due": "2026-08-05" },
+            { "text": "希少癌DB", "due": "2026-08-20" }
+          ]
+        },
+        {
+          "name": "臨床関連",
+          "items": [
+            { "text": "同意書：尿道形成（吻合型、代用組織、亀頭部、尿道会陰ろう）草案は作成済、内容チェック未" },
+            { "text": "膀胱瘻同意書は作成済", "done": true },
+            { "text": "伊藤先生 研究テーマのreview" },
+            { "text": "IJU：TURBT後狭窄のwebアンケート under review" },
+            { "text": "RCC論文：Clinical Genitourinary Cancerへ。Reviewerのコメントで追加解析" },
+            { "text": "USD with NMIBCのケースシリーズ：Urology Practiceに投稿準備を" },
+            {
+              "text": "JUOG新規腎癌研究「免疫チェックポイント阻害薬時代における高リスク腎細胞癌に対する周術期治療に関する後ろ向き観察研究」",
+              "subitems": [
+                { "text": "倫理審査" },
+                { "text": "データベース入力", "due": "2026-09-30" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "学会・研究会",
+          "items": [
+            { "text": "腎癌研究会（岩手）", "date": "2026-07-03/04", "note": "7/3発表済 — 異時性同時性と腎摘有無による予後、IPTWで異時性腎摘ありvs同時性腎摘あり", "done": true },
+            { "text": "排尿機能学会（山梨）", "date": "2026-08-27/29", "note": "学会賞で出したが一般演題へ、8/29発表" },
+            { "text": "尿道関連の講演会（MSD）", "date": "2026-09-16", "note": "発表" },
+            { "text": "泌尿器腫瘍学会（神戸）", "date": "2026-10-24/25", "note": "TURBT後狭窄のwebアンケートで演題登録" },
+            { "text": "GURS（メキシコシティー）", "date": "2026-11-05/07", "note": "NDB / USD with NMIBC" },
+            { "text": "腎癌関連の講演会（エーザイ）", "note": "座長" }
+          ]
+        },
+        {
+          "name": "論文",
+          "items": [
+            { "text": "医原性狭窄のreview" },
+            { "text": "腎癌：異時性vs同時性 腎摘有無" }
+          ]
+        },
+        {
+          "name": "将来の予定",
+          "items": [
+            { "text": "2027 JUA総会「医原性尿道狭窄のupdate」30分 — カテーテル関連、TUR（TURP＋TURBT）、VUAS" }
+          ]
+        }
+      ]
+    }
+  ]
+}
