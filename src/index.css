@@ -232,12 +232,57 @@ nav button.active {
   color: #999;
 }
 
+.todo-group label span:first-of-type {
+  cursor: pointer;
+}
+
 .todo-group .due {
   font-size: 0.75rem;
   color: #2c5eea;
   background: #eef2ff;
   padding: 2px 6px;
   border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-due-btn {
+  font-size: 0.7rem;
+  color: #999;
+  border: 1px dashed #ccc;
+  background: none;
+  border-radius: 4px;
+  padding: 1px 6px;
+  cursor: pointer;
+}
+
+.edit-row {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.edit-row .edit-text {
+  flex: 1;
+  min-width: 160px;
+  padding: 4px 8px;
+  border: 1px solid #2c5eea;
+  border-radius: 4px;
+}
+
+.edit-row .edit-due {
+  width: 190px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-row button {
+  padding: 4px 10px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .todo-group .note {

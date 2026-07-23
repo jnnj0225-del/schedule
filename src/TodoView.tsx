@@ -9,9 +9,21 @@ interface Props {
 
 export default function TodoView({ sections, setSections }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({})
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   function toggleItem(itemId: string) {
     setSections(mapItems(sections, itemId, (item) => ({ ...item, done: !item.done })))
+  }
+
+  function updateItem(itemId: string, updates: { text: string; due: string }) {
+    setSections(
+      mapItems(sections, itemId, (item) => ({
+        ...item,
+        text: updates.text.trim() || item.text,
+        due: updates.due.trim() || undefined,
+      })),
+    )
+    setEditingId(null)
   }
 
   function deleteItem(itemId: string) {
@@ -51,7 +63,15 @@ export default function TodoView({ sections, setSections }: Props) {
               <h3>{group.name}</h3>
               <ul>
                 {group.items.map((item) => (
-                  <TodoRow key={item.id} item={item} onToggle={toggleItem} onDelete={deleteItem} />
+                  <TodoRow
+                    key={item.id}
+                    item={item}
+                    editingId={editingId}
+                    onToggle={toggleItem}
+                    onDelete={deleteItem}
+                    onStartEdit={setEditingId}
+                    onSaveEdit={updateItem}
+                  />
                 ))}
               </ul>
               <div className="add-row">
@@ -73,20 +93,76 @@ export default function TodoView({ sections, setSections }: Props) {
 
 function TodoRow({
   item,
+  editingId,
   onToggle,
   onDelete,
+  onStartEdit,
+  onSaveEdit,
 }: {
   item: TodoItem
+  editingId: string | null
   onToggle: (id: string) => void
   onDelete: (id: string) => void
+  onStartEdit: (id: string | null) => void
+  onSaveEdit: (id: string, updates: { text: string; due: string }) => void
 }) {
+  const isEditing = editingId === item.id
+  const [text, setText] = useState(item.text)
+  const [due, setDue] = useState(item.due ?? '')
+
+  function beginEdit() {
+    setText(item.text)
+    setDue(item.due ?? '')
+    onStartEdit(item.id)
+  }
+
+  function save() {
+    onSaveEdit(item.id, { text, due })
+  }
+
   return (
     <li>
-      <label className={item.done ? 'done' : ''}>
-        <input type="checkbox" checked={item.done} onChange={() => onToggle(item.id)} />
-        <span>{item.text}</span>
-        {item.due && <span className="due">{item.due}</span>}
-      </label>
+      {isEditing ? (
+        <div className="edit-row">
+          <input
+            className="edit-text"
+            value={text}
+            autoFocus
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') save()
+              if (e.key === 'Escape') onStartEdit(null)
+            }}
+          />
+          <input
+            className="edit-due"
+            type="text"
+            value={due}
+            placeholder="締め切り (例: 2026-08-20)"
+            onChange={(e) => setDue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') save()
+              if (e.key === 'Escape') onStartEdit(null)
+            }}
+          />
+          <button onClick={save}>保存</button>
+          <button onClick={() => onStartEdit(null)}>キャンセル</button>
+        </div>
+      ) : (
+        <label className={item.done ? 'done' : ''}>
+          <input type="checkbox" checked={item.done} onChange={() => onToggle(item.id)} />
+          <span onClick={beginEdit}>{item.text}</span>
+          {item.due ? (
+            <span className="due" onClick={beginEdit}>
+              {item.due}
+            </span>
+          ) : (
+            <button className="add-due-btn" onClick={beginEdit}>
+              + 締め切り
+            </button>
+          )}
+        </label>
+      )}
       <button className="delete-btn" onClick={() => onDelete(item.id)}>
         削除
       </button>
@@ -94,7 +170,15 @@ function TodoRow({
       {item.subitems && item.subitems.length > 0 && (
         <ul className="subitems">
           {item.subitems.map((sub) => (
-            <TodoRow key={sub.id} item={sub} onToggle={onToggle} onDelete={onDelete} />
+            <TodoRow
+              key={sub.id}
+              item={sub}
+              editingId={editingId}
+              onToggle={onToggle}
+              onDelete={onDelete}
+              onStartEdit={onStartEdit}
+              onSaveEdit={onSaveEdit}
+            />
           ))}
         </ul>
       )}
