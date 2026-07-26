@@ -49,6 +49,11 @@ nav button.active {
   border-color: #2c5eea;
 }
 
+nav button.reset-btn {
+  color: #666;
+  font-size: 0.8rem;
+}
+
 .month-nav {
   display: flex;
   align-items: center;
