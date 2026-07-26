@@ -28,10 +28,10 @@
     { "date": "2026-07-23", "weekday": "Thu", "notes": ["上飯田", "平針記念", "伊藤先生研究テーマreview", "尿道形成、膀胱瘻同意書"] },
     { "date": "2026-07-24", "weekday": "Fri", "notes": ["TURBT", "TUL", "RUG VCUG 14:00", "RCCデータベース入力"] },
     { "date": "2026-07-25", "weekday": "Sat", "notes": ["OSCE名大"] },
-    { "date": "2026-07-26", "weekday": "Sun", "notes": ["当番", "外来予習", "RCCデータ"] },
-    { "date": "2026-07-27", "weekday": "Mon", "notes": ["当直", "CIC 11:30"] },
-    { "date": "2026-07-28", "weekday": "Tue", "notes": ["放射線治療カンファ 17:00"] },
-    { "date": "2026-07-29", "weekday": "Wed", "notes": [] },
+    { "date": "2026-07-26", "weekday": "Sun", "notes": ["当番", "外来予習", "RCCデータ", "要対応: 上川先生EAUOS abstract（締切超過）"] },
+    { "date": "2026-07-27", "weekday": "Mon", "notes": ["当直", "CIC 11:30", "作業: 伊藤先生 研究テーマのreview"] },
+    { "date": "2026-07-28", "weekday": "Tue", "notes": ["放射線治療カンファ 17:00", "作業: 同意書（尿道形成）内容チェック"] },
+    { "date": "2026-07-29", "weekday": "Wed", "notes": ["作業: 科研費申請 修正・提出"] },
     { "date": "2026-07-30", "weekday": "Thu", "notes": ["上飯田", "エーザイ研修 18:00"] },
     { "date": "2026-07-31", "weekday": "Fri", "notes": ["鳴海", "外来"] }
   ]
