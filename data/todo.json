@@ -3,33 +3,14 @@
   "source": "data/todo-source.txt",
   "sections": [
     {
-      "name": "いったん出来ているもの",
-      "status": "done_or_in_progress",
+      "name": "To do",
       "groups": [
         {
           "name": "研究関連",
           "items": [
             { "text": "科研費申請：事前アドバイス 7月中旬から29日まで締め切り。ChatGPTのコメントを参考に修正を加える" },
             { "text": "WJUのrevise 7/10まで → submitした", "done": true },
-            { "text": "腎癌データベース改訂：6/26に配布済", "done": true }
-          ]
-        },
-        {
-          "name": "臨床関連",
-          "items": [
-            { "text": "ICUD 復習" },
-            { "text": "RANUx 戦略" }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "まだできていないもの",
-      "status": "not_started",
-      "groups": [
-        {
-          "name": "研究関連",
-          "items": [
+            { "text": "腎癌データベース改訂：6/26に配布済", "done": true },
             { "text": "データベース担当分の入力", "due": "2026-07-31" },
             { "text": "上川先生 EAUOS abstract", "due": "2026-07-25" },
             { "text": "JUA 発表テーマの検討（次回meeting）", "due": "2026-08-05" },
@@ -39,6 +20,8 @@
         {
           "name": "臨床関連",
           "items": [
+            { "text": "ICUD 復習" },
+            { "text": "RANUx 戦略" },
             { "text": "同意書：尿道形成（吻合型、代用組織、亀頭部、尿道会陰ろう）草案は作成済、内容チェック未" },
             { "text": "膀胱瘻同意書は作成済", "done": true },
             { "text": "伊藤先生 研究テーマのreview" },
