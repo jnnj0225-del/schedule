@@ -54,6 +54,16 @@ nav button.reset-btn {
   font-size: 0.8rem;
 }
 
+nav button.reset-btn.danger {
+  color: #c0392b;
+  border-color: #c0392b;
+}
+
+.reset-confirm-text {
+  font-size: 0.8rem;
+  color: #c0392b;
+}
+
 .month-nav {
   display: flex;
   align-items: center;
