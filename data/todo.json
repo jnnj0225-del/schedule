@@ -14,16 +14,7 @@
             { "text": "データベース担当分の入力", "due": "2026-07-31" },
             { "text": "上川先生 EAUOS abstract", "due": "2026-07-25" },
             { "text": "JUA 発表テーマの検討（次回meeting）", "due": "2026-08-05" },
-            { "text": "希少癌DB", "due": "2026-08-20" }
-          ]
-        },
-        {
-          "name": "臨床関連",
-          "items": [
-            { "text": "ICUD 復習" },
-            { "text": "RANUx 戦略" },
-            { "text": "同意書：尿道形成（吻合型、代用組織、亀頭部、尿道会陰ろう）草案は作成済、内容チェック未" },
-            { "text": "膀胱瘻同意書は作成済", "done": true },
+            { "text": "希少癌DB", "due": "2026-08-20" },
             { "text": "伊藤先生 研究テーマのreview" },
             { "text": "IJU：TURBT後狭窄のwebアンケート under review" },
             { "text": "RCC論文：Clinical Genitourinary Cancerへ。Reviewerのコメントで追加解析" },
@@ -35,6 +26,15 @@
                 { "text": "データベース入力", "due": "2026-09-30" }
               ]
             }
+          ]
+        },
+        {
+          "name": "臨床関連",
+          "items": [
+            { "text": "ICUD 復習" },
+            { "text": "RANUx 戦略" },
+            { "text": "同意書：尿道形成（吻合型、代用組織、亀頭部、尿道会陰ろう）草案は作成済、内容チェック未" },
+            { "text": "膀胱瘻同意書は作成済", "done": true }
           ]
         },
         {
