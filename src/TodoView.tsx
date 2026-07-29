@@ -62,7 +62,7 @@ export default function TodoView({ sections, setSections }: Props) {
             <div key={group.id} className="todo-group">
               <h3>{group.name}</h3>
               <ul>
-                {group.items.map((item) => (
+                {sortByDue(group.items).map((item) => (
                   <TodoRow
                     key={item.id}
                     item={item}
@@ -169,7 +169,7 @@ function TodoRow({
       {item.note && <p className="note">{item.note}</p>}
       {item.subitems && item.subitems.length > 0 && (
         <ul className="subitems">
-          {item.subitems.map((sub) => (
+          {sortByDue(item.subitems).map((sub) => (
             <TodoRow
               key={sub.id}
               item={sub}
@@ -184,6 +184,21 @@ function TodoRow({
       )}
     </li>
   )
+}
+
+function sortByDue(items: TodoItem[]): TodoItem[] {
+  return items
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      if (a.item.due && b.item.due) {
+        if (a.item.due !== b.item.due) return a.item.due < b.item.due ? -1 : 1
+        return a.index - b.index
+      }
+      if (a.item.due) return -1
+      if (b.item.due) return 1
+      return a.index - b.index
+    })
+    .map(({ item }) => item)
 }
 
 function mapItems(sections: TodoSection[], itemId: string, fn: (item: TodoItem) => TodoItem): TodoSection[] {
