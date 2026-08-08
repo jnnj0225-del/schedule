@@ -57,7 +57,7 @@ export default function TodoView({ sections, setSections }: Props) {
     <div className="todo-view">
       {sections.map((section) => (
         <div key={section.id} className="todo-section">
-          <h2>{section.name}</h2>
+          {section.name && <h2>{section.name}</h2>}
           {section.groups.map((group) => (
             <div key={group.id} className="todo-group">
               <h3>{group.name}</h3>

@@ -1,10 +1,9 @@
 {
-  "title": "To do (8月)",
+  "title": "To do",
   "source": "data/todo.json の未完了項目を引き継ぎ（完了済み項目は除外）。締め切りのなかった項目には 2026-07-26 時点のスケジュールを踏まえて目標期限を設定。",
   "sections": [
     {
-      "name": "7月から持ち越し",
-      "status": "carried_over",
+      "name": "",
       "groups": [
         {
           "name": "研究関連",

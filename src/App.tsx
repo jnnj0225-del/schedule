@@ -8,7 +8,7 @@ import type { DayNotes, TodoSection } from './types'
 type Tab = 'calendar' | 'todo'
 
 const DAY_NOTES_KEY = 'schedule-app.dayNotes.v5'
-const TODO_SECTIONS_KEY = 'schedule-app.todoSections.v4'
+const TODO_SECTIONS_KEY = 'schedule-app.todoSections.v5'
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('calendar')
