@@ -2,13 +2,15 @@ import { useState } from 'react'
 import CalendarView from './CalendarView'
 import TodoView from './TodoView'
 import { useLocalStorageState } from './storage'
-import { buildInitialDayNotes, buildInitialTodoSections, mergeDayNotes, mergeTodoSections } from './seed'
+import { buildInitialDayNotes, buildInitialTodoSections, dayNoteKey, mergeDayNotes, mergeTodoSections } from './seed'
 import type { DayNotes, TodoSection } from './types'
 
 type Tab = 'calendar' | 'todo'
 
 const DAY_NOTES_KEY = 'schedule-app.dayNotes.v5'
 const TODO_SECTIONS_KEY = 'schedule-app.todoSections.v5'
+const DELETED_TODO_TEXTS_KEY = 'schedule-app.deletedTodoTexts.v1'
+const DELETED_DAY_NOTE_KEYS_KEY = 'schedule-app.deletedDayNoteKeys.v1'
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('calendar')
@@ -17,11 +19,24 @@ export default function App() {
     TODO_SECTIONS_KEY,
     buildInitialTodoSections,
   )
+  const [deletedTodoTexts, setDeletedTodoTexts] = useLocalStorageState<string[]>(DELETED_TODO_TEXTS_KEY, () => [])
+  const [deletedDayNoteKeys, setDeletedDayNoteKeys] = useLocalStorageState<string[]>(
+    DELETED_DAY_NOTE_KEYS_KEY,
+    () => [],
+  )
   const [justUpdated, setJustUpdated] = useState(false)
 
+  function handleDeleteTodoTexts(texts: string[]) {
+    setDeletedTodoTexts((prev) => Array.from(new Set([...prev, ...texts])))
+  }
+
+  function handleDeleteDayNote(date: string, note: string) {
+    setDeletedDayNoteKeys((prev) => Array.from(new Set([...prev, dayNoteKey(date, note)])))
+  }
+
   function updateToLatest() {
-    setDayNotes(mergeDayNotes(dayNotes, buildInitialDayNotes()))
-    setTodoSections(mergeTodoSections(todoSections, buildInitialTodoSections()))
+    setDayNotes(mergeDayNotes(dayNotes, buildInitialDayNotes(), new Set(deletedDayNoteKeys)))
+    setTodoSections(mergeTodoSections(todoSections, buildInitialTodoSections(), new Set(deletedTodoTexts)))
     setJustUpdated(true)
     setTimeout(() => setJustUpdated(false), 2000)
   }
@@ -48,9 +63,9 @@ export default function App() {
       </header>
       <main>
         {tab === 'calendar' ? (
-          <CalendarView dayNotes={dayNotes} setDayNotes={setDayNotes} />
+          <CalendarView dayNotes={dayNotes} setDayNotes={setDayNotes} onDeleteNote={handleDeleteDayNote} />
         ) : (
-          <TodoView sections={todoSections} setSections={setTodoSections} />
+          <TodoView sections={todoSections} setSections={setTodoSections} onDeleteTexts={handleDeleteTodoTexts} />
         )}
       </main>
     </div>

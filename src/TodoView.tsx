@@ -5,9 +5,10 @@ import { newId } from './storage'
 interface Props {
   sections: TodoSection[]
   setSections: (sections: TodoSection[]) => void
+  onDeleteTexts: (texts: string[]) => void
 }
 
-export default function TodoView({ sections, setSections }: Props) {
+export default function TodoView({ sections, setSections, onDeleteTexts }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const [editingId, setEditingId] = useState<string | null>(null)
 
@@ -27,6 +28,15 @@ export default function TodoView({ sections, setSections }: Props) {
   }
 
   function deleteItem(itemId: string) {
+    const deletedTexts: string[] = []
+    for (const section of sections) {
+      for (const group of section.groups) {
+        const found = findItemById(group.items, itemId)
+        if (found) collectItemTexts(found, deletedTexts)
+      }
+    }
+    if (deletedTexts.length > 0) onDeleteTexts(deletedTexts)
+
     setSections(
       sections.map((section) => ({
         ...section,
@@ -218,4 +228,22 @@ function removeItem(items: TodoItem[], itemId: string): TodoItem[] {
   return items
     .filter((item) => item.id !== itemId)
     .map((item) => (item.subitems ? { ...item, subitems: removeItem(item.subitems, itemId) } : item))
+}
+
+function findItemById(items: TodoItem[], itemId: string): TodoItem | null {
+  for (const item of items) {
+    if (item.id === itemId) return item
+    if (item.subitems) {
+      const found = findItemById(item.subitems, itemId)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+function collectItemTexts(item: TodoItem, into: string[]) {
+  into.push(item.text)
+  if (item.subitems) {
+    for (const sub of item.subitems) collectItemTexts(sub, into)
+  }
 }

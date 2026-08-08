@@ -14,9 +14,10 @@ function isoDate(year: number, month: number, day: number): string {
 interface Props {
   dayNotes: DayNotes
   setDayNotes: (notes: DayNotes) => void
+  onDeleteNote: (date: string, note: string) => void
 }
 
-export default function CalendarView({ dayNotes, setDayNotes }: Props) {
+export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote }: Props) {
   const [year, setYear] = useState(2026)
   const [month, setMonth] = useState(8) // 1-indexed
   const [selected, setSelected] = useState<string | null>(null)
@@ -56,6 +57,7 @@ export default function CalendarView({ dayNotes, setDayNotes }: Props) {
 
   function removeNote(date: string, index: number) {
     const existing = dayNotes[date] ?? []
+    const removed = existing[index]
     const next = existing.filter((_, i) => i !== index)
     const updated = { ...dayNotes }
     if (next.length === 0) {
@@ -64,6 +66,7 @@ export default function CalendarView({ dayNotes, setDayNotes }: Props) {
       updated[date] = next
     }
     setDayNotes(updated)
+    if (removed !== undefined) onDeleteNote(date, removed)
   }
 
   return (

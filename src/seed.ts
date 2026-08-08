@@ -56,12 +56,24 @@ function collectTexts(items: TodoItem[], into: Set<string>) {
   }
 }
 
+function pruneDeletedItems(items: TodoItem[], deletedTexts: Set<string>): TodoItem[] {
+  return items
+    .filter((item) => !deletedTexts.has(item.text))
+    .map((item) => (item.subitems ? { ...item, subitems: pruneDeletedItems(item.subitems, deletedTexts) } : item))
+}
+
 /**
  * Adds any seed items/notes not already present, without touching existing
  * entries (done state, edited text/due, user-added items are all preserved).
  * Matching is by exact text, since seed items get fresh ids on every load.
+ * `deletedTexts` holds items the user explicitly deleted — those are never
+ * re-added even though they're "missing" from the current state.
  */
-export function mergeTodoSections(current: TodoSection[], seed: TodoSection[]): TodoSection[] {
+export function mergeTodoSections(
+  current: TodoSection[],
+  seed: TodoSection[],
+  deletedTexts: Set<string> = new Set(),
+): TodoSection[] {
   const existingTexts = new Set<string>()
   for (const section of current) {
     for (const group of section.groups) {
@@ -69,12 +81,20 @@ export function mergeTodoSections(current: TodoSection[], seed: TodoSection[]): 
     }
   }
 
+  const prunedSeed = seed.map((section) => ({
+    ...section,
+    groups: section.groups.map((group) => ({
+      ...group,
+      items: pruneDeletedItems(group.items, deletedTexts),
+    })),
+  }))
+
   const result = current.map((section) => ({
     ...section,
     groups: section.groups.map((group) => ({ ...group, items: [...group.items] })),
   }))
 
-  for (const seedSection of seed) {
+  for (const seedSection of prunedSeed) {
     const targetSection = result.find((s) => s.name === seedSection.name)
     if (!targetSection) {
       result.push({ id: newId(), name: seedSection.name, groups: seedSection.groups })
@@ -97,20 +117,33 @@ export function mergeTodoSections(current: TodoSection[], seed: TodoSection[]): 
   return result
 }
 
-/** Adds any seed day-notes not already present for that date; existing notes are untouched. */
-export function mergeDayNotes(current: DayNotes, seed: DayNotes): DayNotes {
+/**
+ * Adds any seed day-notes not already present for that date; existing notes
+ * are untouched. `deletedNoteKeys` holds `date::note` pairs the user
+ * explicitly deleted — those are never re-added.
+ */
+export function mergeDayNotes(
+  current: DayNotes,
+  seed: DayNotes,
+  deletedNoteKeys: Set<string> = new Set(),
+): DayNotes {
   const merged: DayNotes = { ...current }
   for (const [date, notes] of Object.entries(seed)) {
+    const notDeleted = notes.filter((n) => !deletedNoteKeys.has(dayNoteKey(date, n)))
     const existing = merged[date]
     if (!existing) {
-      if (notes.length > 0) merged[date] = [...notes]
+      if (notDeleted.length > 0) merged[date] = notDeleted
       continue
     }
     const existingSet = new Set(existing)
-    const newNotes = notes.filter((n) => !existingSet.has(n))
+    const newNotes = notDeleted.filter((n) => !existingSet.has(n))
     if (newNotes.length > 0) {
       merged[date] = [...existing, ...newNotes]
     }
   }
   return merged
+}
+
+export function dayNoteKey(date: string, note: string): string {
+  return `${date}::${note}`
 }
