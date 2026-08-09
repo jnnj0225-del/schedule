@@ -11,6 +11,7 @@ const DAY_NOTES_KEY = 'schedule-app.dayNotes.v5'
 const TODO_SECTIONS_KEY = 'schedule-app.todoSections.v5'
 const DELETED_TODO_TEXTS_KEY = 'schedule-app.deletedTodoTexts.v1'
 const DELETED_DAY_NOTE_KEYS_KEY = 'schedule-app.deletedDayNoteKeys.v1'
+const STRUCK_DAY_NOTE_KEYS_KEY = 'schedule-app.struckDayNoteKeys.v1'
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('calendar')
@@ -24,6 +25,10 @@ export default function App() {
     DELETED_DAY_NOTE_KEYS_KEY,
     () => [],
   )
+  const [struckDayNoteKeys, setStruckDayNoteKeys] = useLocalStorageState<string[]>(
+    STRUCK_DAY_NOTE_KEYS_KEY,
+    () => [],
+  )
   const [justUpdated, setJustUpdated] = useState(false)
 
   function handleDeleteTodoTexts(texts: string[]) {
@@ -32,6 +37,11 @@ export default function App() {
 
   function handleDeleteDayNote(date: string, note: string) {
     setDeletedDayNoteKeys((prev) => Array.from(new Set([...prev, dayNoteKey(date, note)])))
+  }
+
+  function handleToggleStrikeDayNote(date: string, note: string) {
+    const key = dayNoteKey(date, note)
+    setStruckDayNoteKeys((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]))
   }
 
   function updateToLatest() {
@@ -63,7 +73,13 @@ export default function App() {
       </header>
       <main>
         {tab === 'calendar' ? (
-          <CalendarView dayNotes={dayNotes} setDayNotes={setDayNotes} onDeleteNote={handleDeleteDayNote} />
+          <CalendarView
+            dayNotes={dayNotes}
+            setDayNotes={setDayNotes}
+            onDeleteNote={handleDeleteDayNote}
+            struckKeys={new Set(struckDayNoteKeys)}
+            onToggleStrike={handleToggleStrikeDayNote}
+          />
         ) : (
           <TodoView sections={todoSections} setSections={setTodoSections} onDeleteTexts={handleDeleteTodoTexts} />
         )}

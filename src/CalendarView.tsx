@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { dayNoteKey } from './seed'
 import type { DayNotes } from './types'
 
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土']
@@ -15,9 +16,11 @@ interface Props {
   dayNotes: DayNotes
   setDayNotes: (notes: DayNotes) => void
   onDeleteNote: (date: string, note: string) => void
+  struckKeys: Set<string>
+  onToggleStrike: (date: string, note: string) => void
 }
 
-export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote }: Props) {
+export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote, struckKeys, onToggleStrike }: Props) {
   const [year, setYear] = useState(2026)
   const [month, setMonth] = useState(8) // 1-indexed
   const [selected, setSelected] = useState<string | null>(null)
@@ -98,7 +101,10 @@ export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote }: Pr
               <span className="day-number">{day}</span>
               <span className="day-notes">
                 {notes.slice(0, 3).map((n, idx) => (
-                  <span key={idx} className="day-note-line">
+                  <span
+                    key={idx}
+                    className={`day-note-line${struckKeys.has(dayNoteKey(date, n)) ? ' struck' : ''}`}
+                  >
                     {n}
                   </span>
                 ))}
@@ -113,12 +119,20 @@ export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote }: Pr
         <div className="day-editor">
           <h3>{selected}</h3>
           <ul>
-            {(dayNotes[selected] ?? []).map((note, idx) => (
-              <li key={idx}>
-                <span>{note}</span>
-                <button onClick={() => removeNote(selected, idx)}>削除</button>
-              </li>
-            ))}
+            {(dayNotes[selected] ?? []).map((note, idx) => {
+              const struck = struckKeys.has(dayNoteKey(selected, note))
+              return (
+                <li key={idx}>
+                  <span className={struck ? 'struck' : ''}>{note}</span>
+                  <span className="note-actions">
+                    <button onClick={() => onToggleStrike(selected, note)}>
+                      {struck ? '取消線を戻す' : '取消線'}
+                    </button>
+                    <button onClick={() => removeNote(selected, idx)}>削除</button>
+                  </span>
+                </li>
+              )
+            })}
             {(dayNotes[selected] ?? []).length === 0 && <li className="muted">予定はありません</li>}
           </ul>
           <div className="add-row">
