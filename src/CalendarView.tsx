@@ -18,9 +18,19 @@ interface Props {
   onDeleteNote: (date: string, note: string) => void
   struckKeys: Set<string>
   onToggleStrike: (date: string, note: string) => void
+  memos: Record<string, string>
+  onSetMemo: (date: string, note: string, memo: string) => void
 }
 
-export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote, struckKeys, onToggleStrike }: Props) {
+export default function CalendarView({
+  dayNotes,
+  setDayNotes,
+  onDeleteNote,
+  struckKeys,
+  onToggleStrike,
+  memos,
+  onSetMemo,
+}: Props) {
   const [year, setYear] = useState(2026)
   const [month, setMonth] = useState(8) // 1-indexed
   const [selected, setSelected] = useState<string | null>(null)
@@ -120,16 +130,20 @@ export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote, stru
           <h3>{selected}</h3>
           <ul>
             {(dayNotes[selected] ?? []).map((note, idx) => {
-              const struck = struckKeys.has(dayNoteKey(selected, note))
+              const key = dayNoteKey(selected, note)
+              const struck = struckKeys.has(key)
               return (
                 <li key={idx}>
-                  <span className={struck ? 'struck' : ''}>{note}</span>
-                  <span className="note-actions">
-                    <button onClick={() => onToggleStrike(selected, note)}>
-                      {struck ? '取消線を戻す' : '取消線'}
-                    </button>
-                    <button onClick={() => removeNote(selected, idx)}>削除</button>
-                  </span>
+                  <div className="note-main">
+                    <span className={struck ? 'struck' : ''}>{note}</span>
+                    <span className="note-actions">
+                      <button onClick={() => onToggleStrike(selected, note)}>
+                        {struck ? '取消線を戻す' : '取消線'}
+                      </button>
+                      <button onClick={() => removeNote(selected, idx)}>削除</button>
+                    </span>
+                  </div>
+                  <NoteMemo memo={memos[key] ?? ''} onSave={(memo) => onSetMemo(selected, note, memo)} />
                 </li>
               )
             })}
@@ -147,5 +161,49 @@ export default function CalendarView({ dayNotes, setDayNotes, onDeleteNote, stru
         </div>
       )}
     </div>
+  )
+}
+
+function NoteMemo({ memo, onSave }: { memo: string; onSave: (memo: string) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(memo)
+
+  function begin() {
+    setDraft(memo)
+    setEditing(true)
+  }
+
+  function save() {
+    onSave(draft)
+    setEditing(false)
+  }
+
+  if (editing) {
+    return (
+      <div className="note-memo-edit">
+        <input
+          value={draft}
+          autoFocus
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="メモ"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') save()
+            if (e.key === 'Escape') setEditing(false)
+          }}
+        />
+        <button onClick={save}>保存</button>
+        <button onClick={() => setEditing(false)}>キャンセル</button>
+      </div>
+    )
+  }
+
+  return memo ? (
+    <p className="note-memo" onClick={begin}>
+      {memo}
+    </p>
+  ) : (
+    <button className="add-memo-btn" onClick={begin}>
+      + メモ
+    </button>
   )
 }

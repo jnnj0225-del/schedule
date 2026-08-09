@@ -12,6 +12,7 @@ const TODO_SECTIONS_KEY = 'schedule-app.todoSections.v5'
 const DELETED_TODO_TEXTS_KEY = 'schedule-app.deletedTodoTexts.v1'
 const DELETED_DAY_NOTE_KEYS_KEY = 'schedule-app.deletedDayNoteKeys.v1'
 const STRUCK_DAY_NOTE_KEYS_KEY = 'schedule-app.struckDayNoteKeys.v1'
+const DAY_NOTE_MEMOS_KEY = 'schedule-app.dayNoteMemos.v1'
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('calendar')
@@ -29,6 +30,10 @@ export default function App() {
     STRUCK_DAY_NOTE_KEYS_KEY,
     () => [],
   )
+  const [dayNoteMemos, setDayNoteMemos] = useLocalStorageState<Record<string, string>>(
+    DAY_NOTE_MEMOS_KEY,
+    () => ({}),
+  )
   const [justUpdated, setJustUpdated] = useState(false)
 
   function handleDeleteTodoTexts(texts: string[]) {
@@ -36,12 +41,32 @@ export default function App() {
   }
 
   function handleDeleteDayNote(date: string, note: string) {
-    setDeletedDayNoteKeys((prev) => Array.from(new Set([...prev, dayNoteKey(date, note)])))
+    const key = dayNoteKey(date, note)
+    setDeletedDayNoteKeys((prev) => Array.from(new Set([...prev, key])))
+    setDayNoteMemos((prev) => {
+      if (!(key in prev)) return prev
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
   }
 
   function handleToggleStrikeDayNote(date: string, note: string) {
     const key = dayNoteKey(date, note)
     setStruckDayNoteKeys((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]))
+  }
+
+  function handleSetDayNoteMemo(date: string, note: string, memo: string) {
+    const key = dayNoteKey(date, note)
+    setDayNoteMemos((prev) => {
+      const next = { ...prev }
+      if (memo.trim()) {
+        next[key] = memo.trim()
+      } else {
+        delete next[key]
+      }
+      return next
+    })
   }
 
   function updateToLatest() {
@@ -79,6 +104,8 @@ export default function App() {
             onDeleteNote={handleDeleteDayNote}
             struckKeys={new Set(struckDayNoteKeys)}
             onToggleStrike={handleToggleStrikeDayNote}
+            memos={dayNoteMemos}
+            onSetMemo={handleSetDayNoteMemo}
           />
         ) : (
           <TodoView sections={todoSections} setSections={setTodoSections} onDeleteTexts={handleDeleteTodoTexts} />

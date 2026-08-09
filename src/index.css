@@ -173,16 +173,53 @@ nav button.reset-btn.danger {
 }
 
 .day-editor li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 6px 0;
   border-bottom: 1px solid #f0f0f0;
 }
 
 .day-editor li.muted {
+  display: flex;
   color: #999;
   justify-content: flex-start;
+}
+
+.note-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.note-memo {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #666;
+  cursor: pointer;
+  white-space: pre-wrap;
+}
+
+.note-memo-edit {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.note-memo-edit input {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1px solid #2c5eea;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.add-memo-btn {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: #999;
+  border: 1px dashed #ccc;
+  background: none;
+  border-radius: 4px;
+  padding: 1px 6px;
+  cursor: pointer;
 }
 
 .add-row {
