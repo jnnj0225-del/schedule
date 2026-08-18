@@ -13,6 +13,7 @@ const DELETED_TODO_TEXTS_KEY = 'schedule-app.deletedTodoTexts.v1'
 const DELETED_DAY_NOTE_KEYS_KEY = 'schedule-app.deletedDayNoteKeys.v1'
 const STRUCK_DAY_NOTE_KEYS_KEY = 'schedule-app.struckDayNoteKeys.v1'
 const DAY_NOTE_MEMOS_KEY = 'schedule-app.dayNoteMemos.v1'
+const STRUCK_TODO_TEXTS_KEY = 'schedule-app.struckTodoTexts.v1'
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('calendar')
@@ -34,10 +35,16 @@ export default function App() {
     DAY_NOTE_MEMOS_KEY,
     () => ({}),
   )
+  const [struckTodoTexts, setStruckTodoTexts] = useLocalStorageState<string[]>(STRUCK_TODO_TEXTS_KEY, () => [])
   const [justUpdated, setJustUpdated] = useState(false)
 
   function handleDeleteTodoTexts(texts: string[]) {
     setDeletedTodoTexts((prev) => Array.from(new Set([...prev, ...texts])))
+    setStruckTodoTexts((prev) => prev.filter((t) => !texts.includes(t)))
+  }
+
+  function handleToggleStrikeTodo(text: string) {
+    setStruckTodoTexts((prev) => (prev.includes(text) ? prev.filter((t) => t !== text) : [...prev, text]))
   }
 
   function handleDeleteDayNote(date: string, note: string) {
@@ -108,7 +115,13 @@ export default function App() {
             onSetMemo={handleSetDayNoteMemo}
           />
         ) : (
-          <TodoView sections={todoSections} setSections={setTodoSections} onDeleteTexts={handleDeleteTodoTexts} />
+          <TodoView
+            sections={todoSections}
+            setSections={setTodoSections}
+            onDeleteTexts={handleDeleteTodoTexts}
+            struckTexts={new Set(struckTodoTexts)}
+            onToggleStrike={handleToggleStrikeTodo}
+          />
         )}
       </main>
     </div>

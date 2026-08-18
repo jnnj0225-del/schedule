@@ -347,11 +347,10 @@ nav button.reset-btn.danger {
   cursor: pointer;
 }
 
-.todo-group .note {
+.todo-group .note-memo,
+.todo-group .add-memo-btn,
+.todo-group .note-memo-edit {
   flex-basis: 100%;
-  margin: 0;
-  font-size: 0.8rem;
-  color: #777;
 }
 
 .todo-group .subitems {
@@ -363,6 +362,14 @@ nav button.reset-btn.danger {
   border: none;
   background: none;
   color: #c0392b;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.strike-btn {
+  border: none;
+  background: none;
+  color: #888;
   cursor: pointer;
   font-size: 0.8rem;
 }

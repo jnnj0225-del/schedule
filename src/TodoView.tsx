@@ -6,9 +6,11 @@ interface Props {
   sections: TodoSection[]
   setSections: (sections: TodoSection[]) => void
   onDeleteTexts: (texts: string[]) => void
+  struckTexts: Set<string>
+  onToggleStrike: (text: string) => void
 }
 
-export default function TodoView({ sections, setSections, onDeleteTexts }: Props) {
+export default function TodoView({ sections, setSections, onDeleteTexts, struckTexts, onToggleStrike }: Props) {
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const [editingId, setEditingId] = useState<string | null>(null)
 
@@ -25,6 +27,15 @@ export default function TodoView({ sections, setSections, onDeleteTexts }: Props
       })),
     )
     setEditingId(null)
+  }
+
+  function updateNote(itemId: string, note: string) {
+    setSections(
+      mapItems(sections, itemId, (item) => ({
+        ...item,
+        note: note.trim() || undefined,
+      })),
+    )
   }
 
   function deleteItem(itemId: string) {
@@ -81,6 +92,9 @@ export default function TodoView({ sections, setSections, onDeleteTexts }: Props
                     onDelete={deleteItem}
                     onStartEdit={setEditingId}
                     onSaveEdit={updateItem}
+                    onSaveNote={updateNote}
+                    struckTexts={struckTexts}
+                    onToggleStrike={onToggleStrike}
                   />
                 ))}
               </ul>
@@ -108,6 +122,9 @@ function TodoRow({
   onDelete,
   onStartEdit,
   onSaveEdit,
+  onSaveNote,
+  struckTexts,
+  onToggleStrike,
 }: {
   item: TodoItem
   editingId: string | null
@@ -115,7 +132,11 @@ function TodoRow({
   onDelete: (id: string) => void
   onStartEdit: (id: string | null) => void
   onSaveEdit: (id: string, updates: { text: string; due: string }) => void
+  onSaveNote: (id: string, note: string) => void
+  struckTexts: Set<string>
+  onToggleStrike: (text: string) => void
 }) {
+  const struck = struckTexts.has(item.text)
   const isEditing = editingId === item.id
   const [text, setText] = useState(item.text)
   const [due, setDue] = useState(item.due ?? '')
@@ -161,7 +182,9 @@ function TodoRow({
       ) : (
         <label className={item.done ? 'done' : ''}>
           <input type="checkbox" checked={item.done} onChange={() => onToggle(item.id)} />
-          <span onClick={beginEdit}>{item.text}</span>
+          <span className={struck ? 'struck' : ''} onClick={beginEdit}>
+            {item.text}
+          </span>
           {item.due ? (
             <span className="due" onClick={beginEdit}>
               {item.due}
@@ -173,10 +196,13 @@ function TodoRow({
           )}
         </label>
       )}
+      <button className="strike-btn" onClick={() => onToggleStrike(item.text)}>
+        {struck ? '取消線を戻す' : '取消線'}
+      </button>
       <button className="delete-btn" onClick={() => onDelete(item.id)}>
         削除
       </button>
-      {item.note && <p className="note">{item.note}</p>}
+      <ItemMemo memo={item.note ?? ''} onSave={(note) => onSaveNote(item.id, note)} />
       {item.subitems && item.subitems.length > 0 && (
         <ul className="subitems">
           {sortByDue(item.subitems).map((sub) => (
@@ -188,11 +214,58 @@ function TodoRow({
               onDelete={onDelete}
               onStartEdit={onStartEdit}
               onSaveEdit={onSaveEdit}
+              onSaveNote={onSaveNote}
+              struckTexts={struckTexts}
+              onToggleStrike={onToggleStrike}
             />
           ))}
         </ul>
       )}
     </li>
+  )
+}
+
+function ItemMemo({ memo, onSave }: { memo: string; onSave: (memo: string) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(memo)
+
+  function begin() {
+    setDraft(memo)
+    setEditing(true)
+  }
+
+  function save() {
+    onSave(draft)
+    setEditing(false)
+  }
+
+  if (editing) {
+    return (
+      <div className="note-memo-edit">
+        <input
+          value={draft}
+          autoFocus
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="メモ"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') save()
+            if (e.key === 'Escape') setEditing(false)
+          }}
+        />
+        <button onClick={save}>保存</button>
+        <button onClick={() => setEditing(false)}>キャンセル</button>
+      </div>
+    )
+  }
+
+  return memo ? (
+    <p className="note-memo" onClick={begin}>
+      {memo}
+    </p>
+  ) : (
+    <button className="add-memo-btn" onClick={begin}>
+      + メモ
+    </button>
   )
 }
 
