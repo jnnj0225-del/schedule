@@ -32,7 +32,7 @@ export default function CalendarView({
   onSetMemo,
 }: Props) {
   const [year, setYear] = useState(2026)
-  const [month, setMonth] = useState(8) // 1-indexed
+  const [month, setMonth] = useState(9) // 1-indexed
   const [selected, setSelected] = useState<string | null>(null)
   const [draft, setDraft] = useState('')
 
