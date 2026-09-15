@@ -1,10 +1,11 @@
 import augustSeed from '../data/2026-08.json'
 import septemberSeed from '../data/2026-09.json'
+import octoberSeed from '../data/2026-10.json'
 import todoSeed from '../data/todo-2026-08.json'
 import type { DayNotes, TodoItem, TodoSection } from './types'
 import { newId } from './storage'
 
-const calendarSeeds = [augustSeed, septemberSeed]
+const calendarSeeds = [augustSeed, septemberSeed, octoberSeed]
 
 export function buildInitialDayNotes(): DayNotes {
   const notes: DayNotes = {}
