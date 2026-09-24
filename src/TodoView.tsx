@@ -38,6 +38,25 @@ export default function TodoView({ sections, setSections, onDeleteTexts, struckT
     )
   }
 
+  function moveItem(itemId: string, direction: 'up' | 'down') {
+    setSections(
+      updateSiblingArray(sections, itemId, (items) => {
+        const sorted = sortByDue(items)
+        const idx = sorted.findIndex((i) => i.id === itemId)
+        const targetIdx = direction === 'up' ? idx - 1 : idx + 1
+        if (targetIdx < 0 || targetIdx >= sorted.length) return items
+        const current = sorted[idx]
+        const neighbor = sorted[targetIdx]
+        if ((current.due ?? '') !== (neighbor.due ?? '')) return items
+        const a = items.findIndex((i) => i.id === current.id)
+        const b = items.findIndex((i) => i.id === neighbor.id)
+        const next = [...items]
+        ;[next[a], next[b]] = [next[b], next[a]]
+        return next
+      }),
+    )
+  }
+
   function deleteItem(itemId: string) {
     const deletedTexts: string[] = []
     for (const section of sections) {
@@ -83,7 +102,7 @@ export default function TodoView({ sections, setSections, onDeleteTexts, struckT
             <div key={group.id} className="todo-group">
               <h3>{group.name}</h3>
               <ul>
-                {sortByDue(group.items).map((item) => (
+                {sortByDue(group.items).map((item, idx, arr) => (
                   <TodoRow
                     key={item.id}
                     item={item}
@@ -95,6 +114,9 @@ export default function TodoView({ sections, setSections, onDeleteTexts, struckT
                     onSaveNote={updateNote}
                     struckTexts={struckTexts}
                     onToggleStrike={onToggleStrike}
+                    onMove={moveItem}
+                    canMoveUp={idx > 0 && (arr[idx - 1].due ?? '') === (item.due ?? '')}
+                    canMoveDown={idx < arr.length - 1 && (arr[idx + 1].due ?? '') === (item.due ?? '')}
                   />
                 ))}
               </ul>
@@ -125,6 +147,9 @@ function TodoRow({
   onSaveNote,
   struckTexts,
   onToggleStrike,
+  onMove,
+  canMoveUp,
+  canMoveDown,
 }: {
   item: TodoItem
   editingId: string | null
@@ -135,6 +160,9 @@ function TodoRow({
   onSaveNote: (id: string, note: string) => void
   struckTexts: Set<string>
   onToggleStrike: (text: string) => void
+  onMove: (id: string, direction: 'up' | 'down') => void
+  canMoveUp: boolean
+  canMoveDown: boolean
 }) {
   const struck = struckTexts.has(item.text)
   const isEditing = editingId === item.id
@@ -196,6 +224,22 @@ function TodoRow({
           )}
         </label>
       )}
+      <button
+        className="move-btn"
+        disabled={!canMoveUp}
+        title="同じ締め切りの中で上に移動"
+        onClick={() => onMove(item.id, 'up')}
+      >
+        ▲
+      </button>
+      <button
+        className="move-btn"
+        disabled={!canMoveDown}
+        title="同じ締め切りの中で下に移動"
+        onClick={() => onMove(item.id, 'down')}
+      >
+        ▼
+      </button>
       <button className="strike-btn" onClick={() => onToggleStrike(item.text)}>
         {struck ? '取消線を戻す' : '取消線'}
       </button>
@@ -205,7 +249,7 @@ function TodoRow({
       <ItemMemo memo={item.note ?? ''} onSave={(note) => onSaveNote(item.id, note)} />
       {item.subitems && item.subitems.length > 0 && (
         <ul className="subitems">
-          {sortByDue(item.subitems).map((sub) => (
+          {sortByDue(item.subitems).map((sub, idx, arr) => (
             <TodoRow
               key={sub.id}
               item={sub}
@@ -217,6 +261,9 @@ function TodoRow({
               onSaveNote={onSaveNote}
               struckTexts={struckTexts}
               onToggleStrike={onToggleStrike}
+              onMove={onMove}
+              canMoveUp={idx > 0 && (arr[idx - 1].due ?? '') === (sub.due ?? '')}
+              canMoveDown={idx < arr.length - 1 && (arr[idx + 1].due ?? '') === (sub.due ?? '')}
             />
           ))}
         </ul>
@@ -294,6 +341,32 @@ function mapItems(sections: TodoSection[], itemId: string, fn: (item: TodoItem) 
   return sections.map((section) => ({
     ...section,
     groups: section.groups.map((group) => ({ ...group, items: apply(group.items) })),
+  }))
+}
+
+function updateSiblingArray(
+  sections: TodoSection[],
+  itemId: string,
+  fn: (items: TodoItem[]) => TodoItem[],
+): TodoSection[] {
+  function tryUpdate(items: TodoItem[]): TodoItem[] | null {
+    if (items.some((item) => item.id === itemId)) return fn(items)
+    let changed = false
+    const next = items.map((item) => {
+      if (!item.subitems) return item
+      const updatedSub = tryUpdate(item.subitems)
+      if (!updatedSub) return item
+      changed = true
+      return { ...item, subitems: updatedSub }
+    })
+    return changed ? next : null
+  }
+  return sections.map((section) => ({
+    ...section,
+    groups: section.groups.map((group) => {
+      const updated = tryUpdate(group.items)
+      return updated ? { ...group, items: updated } : group
+    }),
   }))
 }
 

@@ -373,3 +373,18 @@ nav button.reset-btn.danger {
   cursor: pointer;
   font-size: 0.8rem;
 }
+
+.move-btn {
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.move-btn:disabled {
+  color: #ccc;
+  cursor: default;
+}
