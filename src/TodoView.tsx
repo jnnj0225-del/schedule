@@ -41,17 +41,11 @@ export default function TodoView({ sections, setSections, onDeleteTexts, struckT
   function moveItem(itemId: string, direction: 'up' | 'down') {
     setSections(
       updateSiblingArray(sections, itemId, (items) => {
-        const sorted = sortByDue(items)
-        const idx = sorted.findIndex((i) => i.id === itemId)
+        const idx = items.findIndex((i) => i.id === itemId)
         const targetIdx = direction === 'up' ? idx - 1 : idx + 1
-        if (targetIdx < 0 || targetIdx >= sorted.length) return items
-        const current = sorted[idx]
-        const neighbor = sorted[targetIdx]
-        if ((current.due ?? '') !== (neighbor.due ?? '')) return items
-        const a = items.findIndex((i) => i.id === current.id)
-        const b = items.findIndex((i) => i.id === neighbor.id)
+        if (targetIdx < 0 || targetIdx >= items.length) return items
         const next = [...items]
-        ;[next[a], next[b]] = [next[b], next[a]]
+        ;[next[idx], next[targetIdx]] = [next[targetIdx], next[idx]]
         return next
       }),
     )
@@ -102,7 +96,7 @@ export default function TodoView({ sections, setSections, onDeleteTexts, struckT
             <div key={group.id} className="todo-group">
               <h3>{group.name}</h3>
               <ul>
-                {sortByDue(group.items).map((item, idx, arr) => (
+                {group.items.map((item, idx, arr) => (
                   <TodoRow
                     key={item.id}
                     item={item}
@@ -115,8 +109,8 @@ export default function TodoView({ sections, setSections, onDeleteTexts, struckT
                     struckTexts={struckTexts}
                     onToggleStrike={onToggleStrike}
                     onMove={moveItem}
-                    canMoveUp={idx > 0 && (arr[idx - 1].due ?? '') === (item.due ?? '')}
-                    canMoveDown={idx < arr.length - 1 && (arr[idx + 1].due ?? '') === (item.due ?? '')}
+                    canMoveUp={idx > 0}
+                    canMoveDown={idx < arr.length - 1}
                   />
                 ))}
               </ul>
@@ -227,7 +221,7 @@ function TodoRow({
       <button
         className="move-btn"
         disabled={!canMoveUp}
-        title="同じ締め切りの中で上に移動"
+        title="上に移動"
         onClick={() => onMove(item.id, 'up')}
       >
         ▲
@@ -235,7 +229,7 @@ function TodoRow({
       <button
         className="move-btn"
         disabled={!canMoveDown}
-        title="同じ締め切りの中で下に移動"
+        title="下に移動"
         onClick={() => onMove(item.id, 'down')}
       >
         ▼
@@ -249,7 +243,7 @@ function TodoRow({
       <ItemMemo memo={item.note ?? ''} onSave={(note) => onSaveNote(item.id, note)} />
       {item.subitems && item.subitems.length > 0 && (
         <ul className="subitems">
-          {sortByDue(item.subitems).map((sub, idx, arr) => (
+          {item.subitems.map((sub, idx, arr) => (
             <TodoRow
               key={sub.id}
               item={sub}
@@ -262,8 +256,8 @@ function TodoRow({
               struckTexts={struckTexts}
               onToggleStrike={onToggleStrike}
               onMove={onMove}
-              canMoveUp={idx > 0 && (arr[idx - 1].due ?? '') === (sub.due ?? '')}
-              canMoveDown={idx < arr.length - 1 && (arr[idx + 1].due ?? '') === (sub.due ?? '')}
+              canMoveUp={idx > 0}
+              canMoveDown={idx < arr.length - 1}
             />
           ))}
         </ul>
@@ -314,21 +308,6 @@ function ItemMemo({ memo, onSave }: { memo: string; onSave: (memo: string) => vo
       + メモ
     </button>
   )
-}
-
-function sortByDue(items: TodoItem[]): TodoItem[] {
-  return items
-    .map((item, index) => ({ item, index }))
-    .sort((a, b) => {
-      if (a.item.due && b.item.due) {
-        if (a.item.due !== b.item.due) return a.item.due < b.item.due ? -1 : 1
-        return a.index - b.index
-      }
-      if (a.item.due) return -1
-      if (b.item.due) return 1
-      return a.index - b.index
-    })
-    .map(({ item }) => item)
 }
 
 function mapItems(sections: TodoSection[], itemId: string, fn: (item: TodoItem) => TodoItem): TodoSection[] {
