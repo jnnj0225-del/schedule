@@ -1,6 +1,6 @@
 {
   "month": "2026-10",
-  "source": "Google Calendar (jnnj0225@gmail.com), fetched 2026-09-15",
+  "source": "Google Calendar (jnnj0225@gmail.com), fetched 2026-09-15, refreshed 2026-09-24",
   "days": [
     { "date": "2026-10-01", "weekday": "Thu", "notes": ["アジア大会 医療スタッフ 15:30"] },
     { "date": "2026-10-02", "weekday": "Fri", "notes": ["尿道形成 大坪"] },
@@ -15,7 +15,7 @@
     { "date": "2026-10-11", "weekday": "Sun", "notes": [] },
     { "date": "2026-10-12", "weekday": "Mon", "notes": [] },
     { "date": "2026-10-13", "weekday": "Tue", "notes": [] },
-    { "date": "2026-10-14", "weekday": "Wed", "notes": ["膀胱ろう造設 リアナ 10:00", "MEGUMI 20:30"] },
+    { "date": "2026-10-14", "weekday": "Wed", "notes": ["岡崎", "膀胱ろう造設 リアナ 10:00", "MEGUMI 20:30"] },
     { "date": "2026-10-15", "weekday": "Thu", "notes": ["平針記念"] },
     { "date": "2026-10-16", "weekday": "Fri", "notes": [] },
     { "date": "2026-10-17", "weekday": "Sat", "notes": [] },

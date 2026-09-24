@@ -65,6 +65,16 @@ function pruneDeletedItems(items: TodoItem[], deletedTexts: Set<string>): TodoIt
 }
 
 /**
+ * Old group names that were renamed in the seed data. When a user's saved
+ * state still has the old name, it's renamed in place before matching so the
+ * merge updates the existing group instead of creating a duplicate.
+ */
+const RENAMED_GROUPS: Record<string, string> = {
+  研究関連: '現在進行中の研究関連',
+  論文: 'これから書く論文',
+}
+
+/**
  * Adds any seed items/notes not already present, without touching existing
  * entries (done state, edited text/due, user-added items are all preserved).
  * Matching is by exact text, since seed items get fresh ids on every load.
@@ -93,7 +103,11 @@ export function mergeTodoSections(
 
   const result = current.map((section) => ({
     ...section,
-    groups: section.groups.map((group) => ({ ...group, items: [...group.items] })),
+    groups: section.groups.map((group) => ({
+      ...group,
+      name: RENAMED_GROUPS[group.name] ?? group.name,
+      items: [...group.items],
+    })),
   }))
 
   for (const seedSection of prunedSeed) {
@@ -106,8 +120,8 @@ export function mergeTodoSections(
       const newItems = seedGroup.items.filter((item) => !existingTexts.has(item.text))
       const targetGroup = targetSection.groups.find((g) => g.name === seedGroup.name)
       if (!targetGroup) {
-        if (seedGroup.items.length > 0) {
-          targetSection.groups.push({ id: newId(), name: seedGroup.name, items: seedGroup.items })
+        if (newItems.length > 0) {
+          targetSection.groups.push({ id: newId(), name: seedGroup.name, items: newItems })
         }
         continue
       }
