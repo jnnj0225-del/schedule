@@ -71,7 +71,8 @@ function pruneDeletedItems(items: TodoItem[], deletedTexts: Set<string>): TodoIt
  */
 const RENAMED_GROUPS: Record<string, string> = {
   研究関連: '現在進行中の研究関連',
-  論文: 'これから書く論文',
+  論文: 'これからの研究テーマ・論文テーマ',
+  これから書く論文: 'これからの研究テーマ・論文テーマ',
 }
 
 /**
