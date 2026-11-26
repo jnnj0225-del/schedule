@@ -283,13 +283,14 @@ function ItemMemo({ memo, onSave }: { memo: string; onSave: (memo: string) => vo
   if (editing) {
     return (
       <div className="note-memo-edit">
-        <input
+        <textarea
           value={draft}
           autoFocus
+          rows={3}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="メモ"
+          placeholder="メモ (Ctrl+Enterで保存)"
           onKeyDown={(e) => {
-            if (e.key === 'Enter') save()
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) save()
             if (e.key === 'Escape') setEditing(false)
           }}
         />

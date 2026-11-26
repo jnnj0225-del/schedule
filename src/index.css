@@ -199,16 +199,19 @@ nav button.reset-btn.danger {
 
 .note-memo-edit {
   display: flex;
+  align-items: flex-start;
   gap: 6px;
   margin-top: 4px;
 }
 
-.note-memo-edit input {
+.note-memo-edit textarea {
   flex: 1;
   padding: 4px 8px;
   border: 1px solid #2c5eea;
   border-radius: 4px;
   font-size: 0.8rem;
+  font-family: inherit;
+  resize: vertical;
 }
 
 .add-memo-btn {
